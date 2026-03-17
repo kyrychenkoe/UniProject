@@ -1,14 +1,14 @@
 package org.example.model;
 
+import lombok.Setter;
 import org.example.components.SystemComponent;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
 
+@Setter
 public class ParallelBlock implements SystemComponent {
-    public List<SystemComponent> children;
+    private List<SystemComponent> children;
 
     @Override
     public int evaluateLifetime(BigInteger mask) {

@@ -2,15 +2,12 @@ package org.example.components;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import org.example.model.Node;
 import org.example.model.ParallelBlock;
 import org.example.model.SeriesBlock;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -23,7 +20,9 @@ import java.util.function.Function;
 })
 public interface SystemComponent {
     int evaluateLifetime(BigInteger mask);
+
     int calculateCost(BigInteger mask);
+
     void extractNodes(List<Node> allNodes);
 
 }

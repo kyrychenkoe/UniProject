@@ -11,10 +11,10 @@ import java.util.Set;
 
 @Getter
 public class RecursiveBruteForceSearchEngine implements SearchEngine {
+    private final Set<Integer> bestCombination = new HashSet<>();
     private int bestLifetime = -1;
     private int bestCost = 0;
     private BigInteger bestCombinationRaw = BigInteger.ZERO;
-    private final Set<Integer> bestCombination = new HashSet<>();
 
     @Override
     public void doSearch(List<Node> allNodes, SystemComponent rootSystem, int budget) {
@@ -32,7 +32,7 @@ public class RecursiveBruteForceSearchEngine implements SearchEngine {
         if (bestLifetime != -1) {
             for (Node node : allNodes) {
                 if (bestCombinationRaw.testBit(node.index)) {
-                    bestCombination.add(node.id);
+                    bestCombination.add(node.getId());
                 }
             }
         }

@@ -13,10 +13,10 @@ import java.util.Set;
 
 @Getter
 public class BruteForceSearchEngine implements SearchEngine {
+    private final Set<Integer> bestCombination = new HashSet<>();
     private int bestLifetime = -1;
     private int bestCost = 0;
     private BigInteger bestCombinationRaw = BigInteger.ZERO;
-    private final Set<Integer> bestCombination = new HashSet<>();
 
     public void doSearch(List<Node> allNodes, SystemComponent rootSystem, int budget) {
         this.bestLifetime = -1;
@@ -26,7 +26,7 @@ public class BruteForceSearchEngine implements SearchEngine {
 
         int n = allNodes.size();
         var nodes = new ArrayList<>(allNodes);
-        nodes.sort((node1, node2) -> Integer.compare(node2.cost, node1.cost));
+        nodes.sort((node1, node2) -> Integer.compare(node2.getCost(), node1.getCost()));
 
         for (int i = 0; i < n; i++) {
             nodes.get(i).index = n - 1 - i;
@@ -38,7 +38,7 @@ public class BruteForceSearchEngine implements SearchEngine {
 
         for (Node node : allNodes) {
             if (bestCombinationRaw.testBit(node.index)) {
-                bestCombination.add(node.id);
+                bestCombination.add(node.getId());
             }
         }
     }
