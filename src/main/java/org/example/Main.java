@@ -3,7 +3,6 @@ package org.example;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.components.SystemComponent;
 import org.example.controller.BruteForceSearchEngine;
-import org.example.controller.RecursiveBruteForceSearchEngine;
 import org.example.controller.SearchEngine;
 import org.example.model.Node;
 import org.example.model.SearchResult;
@@ -14,14 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-
+    static int budget = 150;
+    static int iterCount = 100;
+    static boolean parallelEnabled = true;
+    static boolean sequentialEnabled = false;
 
     public static void main(String[] args) {
         ObjectMapper mapper = new ObjectMapper();
-        int budget = 150;
-        int iterCount = 100;
-        boolean parallelEnabled = true;
-        boolean sequentialEnabled = false;
+
 
         var engines = List.of(
                 //    new RecursiveBruteForceSearchEngine(),
@@ -47,7 +46,7 @@ public class Main {
                 System.out.println("Пошуковий алгоритм: " + engine.getName());
                 System.out.println("Час виконання: " + (end - start) + " мс");
 
-                if(parallelEnabled) {
+                if (parallelEnabled) {
                     System.out.println("--- РІШЕННЯ З РАНДОМІЗАЦІЄЮ (паралельне обчислення)---");
                     start = System.currentTimeMillis();
                     var deepSearchResult = engine.doSearchWithRandomizationParallel(rootSystem, budget, iterCount);
@@ -60,7 +59,7 @@ public class Main {
                     System.out.println("Час виконання: " + (end - start) + " мс");
                 }
 
-                if(sequentialEnabled) {
+                if (sequentialEnabled) {
                     System.out.println("--- РІШЕННЯ З РАНДОМІЗАЦІЄЮ (послідовне обчислення)---");
                     start = System.currentTimeMillis();
                     var deepSearchResult = engine.doSearchWithRandomizationSequential(rootSystem, budget, iterCount);
