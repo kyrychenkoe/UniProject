@@ -4,6 +4,7 @@ import lombok.Setter;
 import org.example.components.SystemComponent;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -11,8 +12,8 @@ public class SeriesBlock implements SystemComponent {
     private List<SystemComponent> children;
 
     @Override
-    public int evaluateLifetime(BigInteger mask) {
-        int minLifetime = Integer.MAX_VALUE;
+    public double evaluateLifetime(BigInteger mask) {
+        double minLifetime = Integer.MAX_VALUE;
         for (SystemComponent child : children) {
             minLifetime = Math.min(minLifetime, child.evaluateLifetime(mask));
         }
@@ -33,5 +34,15 @@ public class SeriesBlock implements SystemComponent {
         for (SystemComponent child : children) {
             child.extractNodes(allNodes);
         }
+    }
+
+    @Override
+    public SystemComponent deepCopy() {
+        SeriesBlock copy = new SeriesBlock();
+        copy.children = new ArrayList<>();
+        for (SystemComponent child : this.children) {
+            copy.children.add(child.deepCopy());
+        }
+        return copy;
     }
 }

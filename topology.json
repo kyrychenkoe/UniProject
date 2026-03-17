@@ -1,68 +1,54 @@
 {
-  "type": "series",
+  "type": "parallel",
   "children": [
     {
-      "type": "parallel",
+      "type": "sequential",
       "children": [
-        {
-          "type": "series",
-          "children": [
-            {
-              "type": "node",
-              "id": 1,
-              "baseLifetime": 20,
-              "redundantLifetime": 15,
-              "cost": 40
-            },
-            {
-              "type": "node",
-              "id": 2,
-              "baseLifetime": 20,
-              "redundantLifetime": 10,
-              "cost": 20
-            }
-          ]
-        },
-        {
-          "type": "node",
-          "id": 3,
-          "baseLifetime": 15,
-          "redundantLifetime": 10,
-          "cost": 15
-        }
+        { "type": "node", "id": 1, "baseLifetime": 15, "redundantLifetime": 8, "cost": 12 },
+        { "type": "node", "id": 2, "baseLifetime": 20, "redundantLifetime": 10, "cost": 18 },
+        { "type": "node", "id": 3, "baseLifetime": 12, "redundantLifetime": 5, "cost": 10 },
+        { "type": "node", "id": 4, "baseLifetime": 18, "redundantLifetime": 12, "cost": 22 }
       ]
     },
     {
-      "type": "node",
-      "id": 4,
-      "baseLifetime": 20,
-      "redundantLifetime": 20,
-      "cost": 25
+      "type": "sequential",
+      "children": [
+        { "type": "node", "id": 5, "baseLifetime": 10, "redundantLifetime": 5, "cost": 10 },
+        { "type": "node", "id": 6, "baseLifetime": 12, "redundantLifetime": 6, "cost": 11 },
+        { "type": "node", "id": 7, "baseLifetime": 14, "redundantLifetime": 7, "cost": 12 },
+        { "type": "node", "id": 8, "baseLifetime": 16, "redundantLifetime": 8, "cost": 13 },
+        { "type": "node", "id": 9, "baseLifetime": 18, "redundantLifetime": 9, "cost": 14 },
+        { "type": "node", "id": 10, "baseLifetime": 20, "redundantLifetime": 10, "cost": 15 },
+        { "type": "node", "id": 11, "baseLifetime": 22, "redundantLifetime": 11, "cost": 16 }
+      ]
     },
     {
-      "type": "parallel",
+      "type": "sequential",
       "children": [
-        {
-          "type": "node",
-          "id": 5,
-          "baseLifetime": 12,
-          "redundantLifetime": 10,
-          "cost": 10
-        },
-        {
-          "type": "node",
-          "id": 6,
-          "baseLifetime": 10,
-          "redundantLifetime": 50,
-          "cost": 60
-        },
-        {
-          "type": "node",
-          "id": 7,
-          "baseLifetime": 14,
-          "redundantLifetime": 5,
-          "cost": 8
-        }
+        { "type": "node", "id": 12, "baseLifetime": 25, "redundantLifetime": 15, "cost": 30 },
+        { "type": "node", "id": 13, "baseLifetime": 30, "redundantLifetime": 20, "cost": 35 },
+        { "type": "node", "id": 14, "baseLifetime": 28, "redundantLifetime": 18, "cost": 32 }
+      ]
+    },
+    {
+      "type": "sequential",
+      "children": [
+        { "type": "node", "id": 15, "baseLifetime": 11, "redundantLifetime": 5, "cost": 10 },
+        { "type": "node", "id": 16, "baseLifetime": 13, "redundantLifetime": 6, "cost": 12 },
+        { "type": "node", "id": 17, "baseLifetime": 15, "redundantLifetime": 7, "cost": 14 },
+        { "type": "node", "id": 18, "baseLifetime": 17, "redundantLifetime": 8, "cost": 16 },
+        { "type": "node", "id": 19, "baseLifetime": 19, "redundantLifetime": 9, "cost": 18 }
+      ]
+    },
+    {
+      "type": "sequential",
+      "children": [
+        { "type": "node", "id": 20, "baseLifetime": 16, "redundantLifetime": 8, "cost": 15 },
+        { "type": "node", "id": 21, "baseLifetime": 18, "redundantLifetime": 9, "cost": 17 },
+        { "type": "node", "id": 22, "baseLifetime": 20, "redundantLifetime": 10, "cost": 19 },
+        { "type": "node", "id": 23, "baseLifetime": 22, "redundantLifetime": 11, "cost": 21 },
+        { "type": "node", "id": 24, "baseLifetime": 24, "redundantLifetime": 12, "cost": 23 },
+        { "type": "node", "id": 25, "baseLifetime": 26, "redundantLifetime": 13, "cost": 25 }
       ]
     }
   ]

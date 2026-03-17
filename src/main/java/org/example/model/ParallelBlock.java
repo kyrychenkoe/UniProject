@@ -4,6 +4,7 @@ import lombok.Setter;
 import org.example.components.SystemComponent;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -11,8 +12,8 @@ public class ParallelBlock implements SystemComponent {
     private List<SystemComponent> children;
 
     @Override
-    public int evaluateLifetime(BigInteger mask) {
-        int maxLifetime = -1;
+    public double evaluateLifetime(BigInteger mask) {
+        double maxLifetime = -1;
         for (SystemComponent child : children) {
             maxLifetime = Math.max(maxLifetime, child.evaluateLifetime(mask));
         }
@@ -33,5 +34,15 @@ public class ParallelBlock implements SystemComponent {
         for (SystemComponent child : children) {
             child.extractNodes(allNodes);
         }
+    }
+
+    @Override
+    public SystemComponent deepCopy() {
+        ParallelBlock copy = new ParallelBlock();
+        copy.children = new ArrayList<>();
+        for (SystemComponent child : this.children) {
+            copy.children.add(child.deepCopy());
+        }
+        return copy;
     }
 }

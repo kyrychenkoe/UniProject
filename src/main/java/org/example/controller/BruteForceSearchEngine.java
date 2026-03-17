@@ -3,30 +3,25 @@ package org.example.controller;
 import lombok.Getter;
 import org.example.components.SystemComponent;
 import org.example.model.Node;
+import org.example.model.SearchResult;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 @Getter
 public class BruteForceSearchEngine implements SearchEngine {
-    private final Set<Integer> bestCombination = new HashSet<>();
-    private int bestLifetime = -1;
-    private int bestCost = 0;
-    private BigInteger bestCombinationRaw = BigInteger.ZERO;
 
-    public void doSearch(List<Node> allNodes, SystemComponent rootSystem, int budget) {
-        this.bestLifetime = -1;
-        this.bestCost = 0;
-        this.bestCombinationRaw = BigInteger.ZERO;
-        this.bestCombination.clear();
+    public SearchResult doSearch(List<Node> allNodes, SystemComponent rootSystem, int budget) {
+
+        SearchResult result = new SearchResult();
+        result.setRootSystem(rootSystem);
 
         int n = allNodes.size();
         var nodes = new ArrayList<>(allNodes);
-       // nodes.sort((node1, node2) -> Integer.compare(node2.getCost(), node1.getCost()));
+        // nodes.sort((node1, node2) -> Integer.compare(node2.getCost(), node1.getCost()));
 
         for (int i = 0; i < n; i++) {
             nodes.get(i).index = n - 1 - i;
@@ -34,16 +29,22 @@ public class BruteForceSearchEngine implements SearchEngine {
 
         BigInteger totalCombinations = BigInteger.TWO.pow(n);
 
-        bruteForce(rootSystem, budget, totalCombinations);
+        var bestCombinationRaw = bruteForce(rootSystem, budget, totalCombinations, result);
 
+
+        var bestCombination = new HashSet<Integer>();
         for (Node node : allNodes) {
             if (bestCombinationRaw.testBit(node.index)) {
                 bestCombination.add(node.getId());
             }
         }
+        result.setBestCombination(bestCombination);
+        return result;
     }
 
-    private void bruteForce(SystemComponent rootSystem, int budget, BigInteger totalCombinations) {
+    private BigInteger bruteForce(SystemComponent rootSystem, int budget, BigInteger totalCombinations, SearchResult result) {
+        var bestCombinationRaw = BigInteger.ZERO;
+
         for (BigInteger mask = BigInteger.ZERO; mask.compareTo(totalCombinations) < 0; mask = mask.add(BigInteger.ONE)) {
 
             int cost = rootSystem.calculateCost(mask);
@@ -59,13 +60,15 @@ public class BruteForceSearchEngine implements SearchEngine {
                 }
                 continue;
             }
-            int lifetime = rootSystem.evaluateLifetime(mask);
-            if (lifetime > bestLifetime || (lifetime == bestLifetime && cost < bestCost)) {
-                bestLifetime = lifetime;
-                bestCost = cost;
+            double lifetime = rootSystem.evaluateLifetime(mask);
+            if (lifetime > result.getBestLifetime() || (lifetime == result.getBestLifetime() && cost < result.getBestCost())) {
+                result.setBestCost(cost);
+                result.setBestLifetime(lifetime);
                 bestCombinationRaw = mask;
             }
         }
+
+        return bestCombinationRaw;
     }
 
 

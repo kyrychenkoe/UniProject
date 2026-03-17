@@ -6,6 +6,7 @@ import org.example.controller.BruteForceSearchEngine;
 import org.example.controller.RecursiveBruteForceSearchEngine;
 import org.example.controller.SearchEngine;
 import org.example.model.Node;
+import org.example.model.SearchResult;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,15 +34,43 @@ public class Main {
 
                 System.out.println("Знайдено кінцевих вузлів: " + allNodes.size());
                 var start = System.currentTimeMillis();
-                engine.doSearch(allNodes, rootSystem, budget);
+                var searchResult = engine.doSearch(allNodes, rootSystem, budget);
                 var end = System.currentTimeMillis();
 
                 System.out.println("--- РІШЕННЯ ---");
-                System.out.println("Час життя: " + engine.getBestLifetime());
-                System.out.println("Витрачено: " + engine.getBestCost() + " / " + budget);
-                System.out.println("Резерви куплені для вузлів з ID: " + engine.getBestCombination());
+                System.out.println("Час життя: " + searchResult.getBestLifetime());
+                System.out.println("Витрачено: " + searchResult.getBestCost() + " / " + budget);
+                System.out.println("Резерви куплені для вузлів з ID: " + searchResult.getBestCombination());
                 System.out.println("Пошуковий алгоритм: " + engine.getName());
                 System.out.println("Час виконання: " + (end - start) + " мс");
+
+                System.out.println("--- РІШЕННЯ З РАНДОМІЗАЦІЄЮ (паралельне обчислення)---");
+                start = System.currentTimeMillis();
+                var deepSearchResult = engine.doSearchWithRandomizationParallel(rootSystem, budget, 1000);
+                end = System.currentTimeMillis();
+                double averageLifetime = deepSearchResult.stream()
+                        .map(SearchResult::getBestLifetime)
+                        .mapToDouble(Double::doubleValue)
+                        .average().orElse(0);
+
+                System.out.println("Середній час життя з рандомізацією: " + averageLifetime);
+                System.out.println("Час виконання: " + (end - start) + " мс");
+
+
+                System.out.println("--- РІШЕННЯ З РАНДОМІЗАЦІЄЮ (послідовне обчислення)---");
+                start = System.currentTimeMillis();
+                deepSearchResult = engine.doSearchWithRandomizationSequential(rootSystem, budget, 1000);
+                end = System.currentTimeMillis();
+                averageLifetime = deepSearchResult.stream()
+                        .map(SearchResult::getBestLifetime)
+                        .mapToDouble(Double::doubleValue)
+                        .average().orElse(0);
+
+                System.out.println("Середній час життя з рандомізацією: " + averageLifetime);
+                System.out.println("Час виконання: " + (end - start) + " мс");
+
+                System.out.println("-----------------------------");
+                System.out.println();
 
 
             } catch (IOException e) {

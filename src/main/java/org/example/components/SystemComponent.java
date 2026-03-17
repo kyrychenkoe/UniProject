@@ -15,14 +15,15 @@ import java.util.List;
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Node.class, name = "node"),
-        @JsonSubTypes.Type(value = SeriesBlock.class, name = "series"),
+        @JsonSubTypes.Type(value = SeriesBlock.class, name = "sequential"),
         @JsonSubTypes.Type(value = ParallelBlock.class, name = "parallel")
 })
 public interface SystemComponent {
-    int evaluateLifetime(BigInteger mask);
+    double evaluateLifetime(BigInteger mask);
 
     int calculateCost(BigInteger mask);
 
     void extractNodes(List<Node> allNodes);
 
+    SystemComponent deepCopy();
 }
