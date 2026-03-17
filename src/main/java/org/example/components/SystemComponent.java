@@ -7,8 +7,10 @@ import org.example.model.Node;
 import org.example.model.ParallelBlock;
 import org.example.model.SeriesBlock;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -20,7 +22,8 @@ import java.util.Set;
         @JsonSubTypes.Type(value = ParallelBlock.class, name = "parallel")
 })
 public interface SystemComponent {
-    int evaluateLifetime(Set<Integer> activeRedundancies);
-    int calculateCost(Set<Integer> activeRedundancies);
+    int evaluateLifetime(BigInteger mask);
+    int calculateCost(BigInteger mask);
     void extractNodes(List<Node> allNodes);
+
 }

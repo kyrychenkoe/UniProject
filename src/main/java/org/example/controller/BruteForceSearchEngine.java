@@ -4,41 +4,73 @@ import lombok.Getter;
 import org.example.components.SystemComponent;
 import org.example.model.Node;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 @Getter
-public class BruteForceSearchEngine {
+public class BruteForceSearchEngine implements SearchEngine {
     private int bestLifetime = -1;
     private int bestCost = 0;
-    private Set<Integer> bestCombination = new HashSet<>();
+    private BigInteger bestCombinationRaw = BigInteger.ZERO;
+    private final Set<Integer> bestCombination = new HashSet<>();
 
-    public void doSearch(int nodeIndex, List<Node> allNodes,
-                         Set<Integer> currentRedundancies,
-                         SystemComponent rootSystem, int budget) {
+    public void doSearch(List<Node> allNodes, SystemComponent rootSystem, int budget) {
+        this.bestLifetime = -1;
+        this.bestCost = 0;
+        this.bestCombinationRaw = BigInteger.ZERO;
+        this.bestCombination.clear();
 
-        int cost = rootSystem.calculateCost(currentRedundancies);
-        if (cost > budget) {
-            return;
+        int n = allNodes.size();
+        var nodes = new ArrayList<>(allNodes);
+        nodes.sort((node1, node2) -> Integer.compare(node2.cost, node1.cost));
+
+        for (int i = 0; i < n; i++) {
+            nodes.get(i).index = n - 1 - i;
         }
 
-        if (nodeIndex == allNodes.size()) {
-            int lifetime = rootSystem.evaluateLifetime(currentRedundancies);
+        BigInteger totalCombinations = BigInteger.TWO.pow(n);
+
+        bruteForce(rootSystem, budget, totalCombinations);
+
+        for (Node node : allNodes) {
+            if (bestCombinationRaw.testBit(node.index)) {
+                bestCombination.add(node.id);
+            }
+        }
+    }
+
+    private void bruteForce(SystemComponent rootSystem, int budget, BigInteger totalCombinations) {
+        for (BigInteger mask = BigInteger.ZERO; mask.compareTo(totalCombinations) < 0; mask = mask.add(BigInteger.ONE)) {
+
+            int cost = rootSystem.calculateCost(mask);
+
+            if (cost > budget) {
+                int tz = mask.getLowestSetBit();
+                if (tz == -1) {
+                    break;
+                }
+                if (tz > 0) {
+                    BigInteger skip = BigInteger.ONE.shiftLeft(tz).subtract(BigInteger.ONE);
+                    mask = mask.or(skip);
+                }
+                continue;
+            }
+            int lifetime = rootSystem.evaluateLifetime(mask);
             if (lifetime > bestLifetime || (lifetime == bestLifetime && cost < bestCost)) {
                 bestLifetime = lifetime;
                 bestCost = cost;
-                bestCombination = new HashSet<>(currentRedundancies);
+                bestCombinationRaw = mask;
             }
-            return;
         }
+    }
 
-        Node currentNode = allNodes.get(nodeIndex);
 
-        doSearch(nodeIndex + 1, allNodes, currentRedundancies, rootSystem, budget);
-
-        currentRedundancies.add(currentNode.id);
-        doSearch(nodeIndex + 1, allNodes, currentRedundancies, rootSystem, budget);
-        currentRedundancies.remove(currentNode.id);
+    @Override
+    public String getName() {
+        return "BruteForceSearchEngine";
     }
 }

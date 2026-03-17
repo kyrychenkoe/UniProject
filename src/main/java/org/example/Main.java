@@ -3,6 +3,8 @@ package org.example;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.components.SystemComponent;
 import org.example.controller.BruteForceSearchEngine;
+import org.example.controller.RecursiveBruteForceSearchEngine;
+import org.example.controller.SearchEngine;
 import org.example.model.Node;
 
 import java.io.File;
@@ -19,26 +21,35 @@ public class Main {
         ObjectMapper mapper = new ObjectMapper();
         int budget = 50;
 
-        BruteForceSearchEngine engine = new BruteForceSearchEngine();
+        var engines = List.of(
+                new RecursiveBruteForceSearchEngine(),
+                new BruteForceSearchEngine()
+        );
 
-        try {
+        for (SearchEngine engine : engines) {
+            try {
+                SystemComponent rootSystem = mapper.readValue(new File("topology.json"), SystemComponent.class);
 
-            SystemComponent rootSystem = mapper.readValue(new File("topology.json"), SystemComponent.class);
+                List<Node> allNodes = new ArrayList<>();
+                rootSystem.extractNodes(allNodes);
 
-            List<Node> allNodes = new ArrayList<>();
-            rootSystem.extractNodes(allNodes);
+                System.out.println("Знайдено кінцевих вузлів: " + allNodes.size());
+                var start = System.currentTimeMillis();
+                engine.doSearch(allNodes, rootSystem, budget);
+                var end = System.currentTimeMillis();
 
-            System.out.println("Знайдено кінцевих вузлів: " + allNodes.size());
+                System.out.println("--- РІШЕННЯ ---");
+                System.out.println("Час життя: " + engine.getBestLifetime());
+                System.out.println("Витрачено: " + engine.getBestCost() + " / " + budget);
+                System.out.println("Резерви куплені для вузлів з ID: " + engine.getBestCombination());
+                System.out.println("Пошуковий алгоритм: " + engine.getName());
+                System.out.println("Час виконання: " + (end - start) + " мс");
 
-            engine.doSearch(0, allNodes, new HashSet<>(), rootSystem, budget);
 
-            System.out.println("--- РІШЕННЯ ---");
-            System.out.println("Час життя: " + engine.getBestLifetime());
-            System.out.println("Витрачено: " + engine.getBestCost() + " / " + budget);
-            System.out.println("Резерви куплені для вузлів з ID: " + engine.getBestCombination());
-
-        } catch (IOException e) {
-            System.err.println("Помилка читання JSON: " + e.getMessage());
+            } catch (IOException e) {
+                System.err.println("Помилка читання JSON: " + e.getMessage());
+            }
         }
+
     }
 }
