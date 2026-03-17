@@ -18,10 +18,13 @@ public class Main {
 
     public static void main(String[] args) {
         ObjectMapper mapper = new ObjectMapper();
-        int budget = 50;
+        int budget = 150;
+        int iterCount = 100;
+        boolean parallelEnabled = true;
+        boolean sequentialEnabled = false;
 
         var engines = List.of(
-                new RecursiveBruteForceSearchEngine(),
+                //    new RecursiveBruteForceSearchEngine(),
                 new BruteForceSearchEngine()
         );
 
@@ -44,30 +47,31 @@ public class Main {
                 System.out.println("Пошуковий алгоритм: " + engine.getName());
                 System.out.println("Час виконання: " + (end - start) + " мс");
 
-                System.out.println("--- РІШЕННЯ З РАНДОМІЗАЦІЄЮ (паралельне обчислення)---");
-                start = System.currentTimeMillis();
-                var deepSearchResult = engine.doSearchWithRandomizationParallel(rootSystem, budget, 1000);
-                end = System.currentTimeMillis();
-                double averageLifetime = deepSearchResult.stream()
-                        .map(SearchResult::getBestLifetime)
-                        .mapToDouble(Double::doubleValue)
-                        .average().orElse(0);
+                if(parallelEnabled) {
+                    System.out.println("--- РІШЕННЯ З РАНДОМІЗАЦІЄЮ (паралельне обчислення)---");
+                    start = System.currentTimeMillis();
+                    var deepSearchResult = engine.doSearchWithRandomizationParallel(rootSystem, budget, iterCount);
+                    end = System.currentTimeMillis();
+                    double averageLifetime = deepSearchResult.stream()
+                            .map(SearchResult::getBestLifetime)
+                            .mapToDouble(Double::doubleValue)
+                            .average().orElse(0);
+                    System.out.println("Середній час життя з рандомізацією: " + averageLifetime);
+                    System.out.println("Час виконання: " + (end - start) + " мс");
+                }
 
-                System.out.println("Середній час життя з рандомізацією: " + averageLifetime);
-                System.out.println("Час виконання: " + (end - start) + " мс");
-
-
-                System.out.println("--- РІШЕННЯ З РАНДОМІЗАЦІЄЮ (послідовне обчислення)---");
-                start = System.currentTimeMillis();
-                deepSearchResult = engine.doSearchWithRandomizationSequential(rootSystem, budget, 1000);
-                end = System.currentTimeMillis();
-                averageLifetime = deepSearchResult.stream()
-                        .map(SearchResult::getBestLifetime)
-                        .mapToDouble(Double::doubleValue)
-                        .average().orElse(0);
-
-                System.out.println("Середній час життя з рандомізацією: " + averageLifetime);
-                System.out.println("Час виконання: " + (end - start) + " мс");
+                if(sequentialEnabled) {
+                    System.out.println("--- РІШЕННЯ З РАНДОМІЗАЦІЄЮ (послідовне обчислення)---");
+                    start = System.currentTimeMillis();
+                    var deepSearchResult = engine.doSearchWithRandomizationSequential(rootSystem, budget, iterCount);
+                    end = System.currentTimeMillis();
+                    var averageLifetime = deepSearchResult.stream()
+                            .map(SearchResult::getBestLifetime)
+                            .mapToDouble(Double::doubleValue)
+                            .average().orElse(0);
+                    System.out.println("Середній час життя з рандомізацією: " + averageLifetime);
+                    System.out.println("Час виконання: " + (end - start) + " мс");
+                }
 
                 System.out.println("-----------------------------");
                 System.out.println();

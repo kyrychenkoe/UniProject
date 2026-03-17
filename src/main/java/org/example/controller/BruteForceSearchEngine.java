@@ -21,7 +21,7 @@ public class BruteForceSearchEngine implements SearchEngine {
 
         int n = allNodes.size();
         var nodes = new ArrayList<>(allNodes);
-        // nodes.sort((node1, node2) -> Integer.compare(node2.getCost(), node1.getCost()));
+        nodes.sort((node1, node2) -> Integer.compare(node2.getCost(), node1.getCost()));
 
         for (int i = 0; i < n; i++) {
             nodes.get(i).index = n - 1 - i;
